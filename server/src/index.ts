@@ -80,12 +80,12 @@ let app = Bun.serve<User>({
             ws.publish(channel_id, `${ws.data.username} as entered the chat.`)
         },
         message(ws, message) {
-            ws.publish(ws.data.channel, `${ws.data.}`)
+            ws.publish(ws.data.channel, `${ws.data.username}: ${message}`)
         },
-        close() {
-            //
+        close(ws) {
+            ws.publish(ws.data.channel, `${ws.data.username} has left the chat.`)
         }
     }
 })
 
-console.log("Hello via Bun!");
+// console.log("Hello via Bun!");
