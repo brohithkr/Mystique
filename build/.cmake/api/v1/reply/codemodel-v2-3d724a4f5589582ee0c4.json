@@ -1,0 +1,89 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-d7e056608ac449b5633e.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.10"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						1
+					]
+				},
+				{
+					"build" : "flutter",
+					"jsonFile" : "directory-flutter-Debug-228115e0cfb1b7105c38.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.10"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "flutter",
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0,
+						1
+					],
+					"name" : "runner",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 1,
+					"id" : "flutter_assemble::@2bb09fbb03a373b2cb34",
+					"jsonFile" : "target-flutter_assemble-Debug-e5d31ce514b139c674f1.json",
+					"name" : "flutter_assemble",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "mystique::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-mystique-Debug-2eca9abc7467881cce77.json",
+					"name" : "mystique",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/rohith/Documents/myProjects/Mystique/build",
+		"source" : "/home/rohith/Documents/myProjects/Mystique/client/mystique_gui/linux"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 6
+	}
+}
