@@ -12,20 +12,19 @@ jobs:
   build:
 
     runs-on: 'ubuntu-latest'
-
+    env:
+          USERNAME: ${{secrets.DOCKER_USERNAME}}
+          PASSWORD: ${{secrets.DOCKER_PASSWORD}}
     if: ${{contains(github.event.head_commit.message, '[deploy]') || (github.event.inputs.mode == 'full')}}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
       - run: cd server
       - name: docker login
-        env:
-          USERNAME: ${{secrets.DOCKER_USERNAME}}
-          PASSWORD: ${{secrets.DOCKER_PASSWORD}}
         run: docker login -u $USERNAME -p $PASSWORD
       - name: docker build
         # - run: echo 'docker build . -t $USERNAME/mystique'
-        run: docker build . -t brohithkr/mystique
+        run: docker build . -t $USERNAME/mystique
       - name: docker push
         run: docker push $USERNAME/mystique
       
