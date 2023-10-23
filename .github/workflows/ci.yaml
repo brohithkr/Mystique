@@ -1,4 +1,23 @@
 name: Build and Push to Docker Hub
 
-on:
-  push
+on: push
+
+jobs:
+  build:
+    runs-on: 'ubuntu-latest'
+    if: contains(github.event.head_commit.message, '[build]')
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - run: cd server
+      - name: docker login
+        env:
+          USERNAME: ${{secrets.DOCKER_USERNAME}}
+          PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+        run: docker login -u $USERNAME -p PASSWORD
+      - name: docker build
+        run: docker build . -t $USERNAME/mystique
+      - name: docker push
+        run: docker push $USERNAME/mystique
+      
+  
