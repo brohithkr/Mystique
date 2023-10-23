@@ -24,7 +24,8 @@ jobs:
           PASSWORD: ${{secrets.DOCKER_PASSWORD}}
         run: docker login -u $USERNAME -p $PASSWORD
       - name: docker build
-        run: docker build . -t ${{USERNAME}}/mystique
+        # - run: echo 'docker build . -t $USERNAME/mystique'
+        run: docker build . -t brohithkr/mystique
       - name: docker push
         run: docker push $USERNAME/mystique
       
