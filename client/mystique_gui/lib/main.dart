@@ -2,8 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'color_schemes.g.dart';
-import 'package:username_gen/username_gen.dart';
+// import 'package:username_gen/username_gen.dart';
 import 'random_name.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,8 +18,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "Mystique",
-      theme: ThemeData(colorScheme: lightColorScheme, useMaterial3: true,),
-      darkTheme: ThemeData(colorScheme: darkColorScheme, useMaterial3: true,),
+      theme: ThemeData(
+        colorScheme: lightColorScheme,
+        useMaterial3: true,
+      ),
+      darkTheme: ThemeData(
+        colorScheme: darkColorScheme,
+        useMaterial3: true,
+      ),
       home: HomePage(),
     );
   }
@@ -75,6 +82,23 @@ class InputForm extends StatefulWidget {
 
 class _InputFormState extends State<InputForm> {
   final controller = TextEditingController();
+  FocusNode focusNode = FocusNode();
+  var username = "";
+  var autoGenName = genRandName();
+  var loadState = "";
+  var loadMsg = "";
+  void handleUsername(String data) {
+    setState(() {
+      username = data;
+    });
+  }
+
+  void handleLoad(String state, String message) {
+    setState(() {
+      loadState = state;
+      loadMsg = message;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,44 +113,95 @@ class _InputFormState extends State<InputForm> {
           "nickname",
           style: TextStyle(fontSize: 45, fontFamily: "Retrocycles"),
         ),
-        // SizedBox(height: 20),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 20),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
+                margin: EdgeInsets.only(right: 5),
                 width: 200,
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surfaceVariant,
                   borderRadius: BorderRadius.all(Radius.circular(8)),
                 ),
-                child: TextField(
+                child: TextFormField(
+                  // focusNode: focusNode,
+                  // initialValue: username,
+                  // onChanged: (value) => handleUsername(value),
                   controller: controller,
                   textAlign: TextAlign.center,
-                  textAlignVertical: TextAlignVertical.center,
+                  textAlignVertical: TextAlignVertical.top,
                   decoration: InputDecoration(
-                    hintText: genRandName(),
+                    // hintText: (username == "") ? autoGenName : null,
+                    // labelText: (username == "") ? autoGenName : null,
                     border: InputBorder.none,
-                    contentPadding: EdgeInsets.all(8),
+                    // contentPadding: EdgeInsets.all(8),
                     hintStyle: TextStyle(),
                   ),
                   style: TextStyle(),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  // print(username);
+                  var randName = genRandName();
+                  controller.value = TextEditingValue(
+                    text: randName,
+                    selection: TextSelection.fromPosition(
+                      TextPosition(
+                        offset: randName.length,
+                      ),
+                    ),
+                  );
+                },
+                child: Icon(
+                  Icons.casino_rounded,
                 ),
               )
             ],
           ),
         ),
         ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            if (controller.text == "") {
+              // handleLoad("error", "Please type a nickname");
+              var errorBar = SnackBar(content: Text("Please select a nickname", style: TextStyle(color: Theme.of(context).colorScheme.onBackground ),),
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: Colors.blueGrey.shade900,
+
+              );
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(errorBar);
+            }
+          },
           style: ButtonStyle(alignment: Alignment.center),
           child: Text("Start chatting!"),
-        )
+        ),
+        (loadState != "")
+            ? LoadBox(loadState: "error")
+            : SizedBox(),
       ],
     );
   }
 }
 
+class LoadBox extends StatelessWidget {
+  final String loadState;
+  // final String loadMsg;
+  const LoadBox({super.key, required this.loadState});
+
+  @override
+  Widget build(BuildContext context) {
+      return Padding(
+        padding: EdgeInsets.all(15),
+        child: SpinKitCircle(
+          color: Theme.of(context).colorScheme.onBackground,
+          size: 50,
+        ),
+      );
+    }
+}
 
 
 // class MyHomePage extends StatefulWidget {
