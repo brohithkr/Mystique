@@ -22,9 +22,10 @@ void displayRefresh(List<String> data) async {
 
 void main() async {
   // displayRefresh();
+  stdout.write("Please enter a nickname: ");
   String username = stdin.readLineSync() ?? "user";
-  final socket =
-      WebSocket(Uri.parse('ws://localhost:3000/connect?username=$username'));
+  final socket = WebSocket(
+      Uri.parse('ws://mystique.onrender.com/connect?username=$username'));
 
   // Wait until a connection has been established.
   await socket.connection.firstWhere((state) {

@@ -1,10 +1,15 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'color_schemes.g.dart';
-// import 'package:username_gen/username_gen.dart';
-import 'random_name.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
+
+import 'color_schemes.g.dart';
+import 'chat_ui.dart';
+import 'random_name.dart';
+import 'config.dart' as config;
+
+// WebSocketChannel? wsChannel;
 
 void main() {
   runApp(const MyApp());
@@ -86,17 +91,15 @@ class _InputFormState extends State<InputForm> {
   var username = "";
   var autoGenName = genRandName();
   var loadState = "";
-  var loadMsg = "";
   void handleUsername(String data) {
     setState(() {
       username = data;
     });
   }
 
-  void handleLoad(String state, String message) {
+  void handleLoad(String state) {
     setState(() {
       loadState = state;
-      loadMsg = message;
     });
   }
 
@@ -118,89 +121,190 @@ class _InputFormState extends State<InputForm> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                margin: EdgeInsets.only(right: 5),
-                width: 200,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surfaceVariant,
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
-                ),
-                child: TextFormField(
-                  // focusNode: focusNode,
-                  // initialValue: username,
-                  // onChanged: (value) => handleUsername(value),
-                  controller: controller,
-                  textAlign: TextAlign.center,
-                  textAlignVertical: TextAlignVertical.top,
-                  decoration: InputDecoration(
-                    // hintText: (username == "") ? autoGenName : null,
-                    // labelText: (username == "") ? autoGenName : null,
-                    border: InputBorder.none,
-                    // contentPadding: EdgeInsets.all(8),
-                    hintStyle: TextStyle(),
-                  ),
-                  style: TextStyle(),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  // print(username);
-                  var randName = genRandName();
-                  controller.value = TextEditingValue(
-                    text: randName,
-                    selection: TextSelection.fromPosition(
-                      TextPosition(
-                        offset: randName.length,
-                      ),
-                    ),
-                  );
-                },
-                child: Icon(
-                  Icons.casino_rounded,
-                ),
-              )
+              UsernameField(controller: controller),
+              DiceButton(controller: controller)
             ],
           ),
         ),
-        ElevatedButton(
-          onPressed: () {
-            if (controller.text == "") {
-              // handleLoad("error", "Please type a nickname");
-              var errorBar = SnackBar(content: Text("Please select a nickname", style: TextStyle(color: Theme.of(context).colorScheme.onBackground ),),
-              behavior: SnackBarBehavior.floating,
-              backgroundColor: Colors.blueGrey.shade900,
-
-              );
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(errorBar);
-            }
-          },
-          style: ButtonStyle(alignment: Alignment.center),
-          child: Text("Start chatting!"),
+        SubmitButton(
+          controller: controller,
+          handleLoad: handleLoad,
         ),
-        (loadState != "")
-            ? LoadBox(loadState: "error")
-            : SizedBox(),
+        StreamBox(loadState: loadState, controller: controller),
       ],
     );
   }
 }
 
-class LoadBox extends StatelessWidget {
-  final String loadState;
-  // final String loadMsg;
-  const LoadBox({super.key, required this.loadState});
+class UsernameField extends StatelessWidget {
+  const UsernameField({
+    super.key,
+    required this.controller,
+  });
+
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
-      return Padding(
-        padding: EdgeInsets.all(15),
-        child: SpinKitCircle(
-          color: Theme.of(context).colorScheme.onBackground,
-          size: 50,
+    return Container(
+      margin: EdgeInsets.only(right: 5),
+      width: 200,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceVariant,
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+      ),
+      child: TextFormField(
+        // focusNode: focusNode,
+        // initialValue: username,
+        // onChanged: (value) => handleUsername(value),
+        controller: controller,
+        textAlign: TextAlign.center,
+        textAlignVertical: TextAlignVertical.top,
+        decoration: InputDecoration(
+          // hintText: (username == "") ? autoGenName : null,
+          // labelText: (username == "") ? autoGenName : null,
+          border: InputBorder.none,
+          // contentPadding: EdgeInsets.all(8),
+          hintStyle: TextStyle(),
         ),
-      );
+        style: TextStyle(),
+      ),
+    );
+  }
+}
+
+class DiceButton extends StatelessWidget {
+  const DiceButton({
+    super.key,
+    required this.controller,
+  });
+
+  final TextEditingController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {
+        // print(username);
+        var randName = genRandName();
+        controller.value = TextEditingValue(
+          text: randName,
+          selection: TextSelection.fromPosition(
+            TextPosition(
+              offset: randName.length,
+            ),
+          ),
+        );
+      },
+      child: Icon(
+        Icons.casino_rounded,
+      ),
+    );
+  }
+}
+
+class SubmitButton extends StatelessWidget {
+  const SubmitButton({
+    super.key,
+    required this.controller,
+    required this.handleLoad,
+  });
+
+  final TextEditingController controller;
+  final void Function(String) handleLoad;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: ElevatedButton(
+        onPressed: () {
+          if (controller.text == "") {
+            var errorBar = SnackBar(
+              content: Text(
+                "Please select a nickname",
+                style: TextStyle(
+                    color: Theme.of(context).colorScheme.onBackground),
+              ),
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: Colors.blueGrey.shade900,
+            );
+            ScaffoldMessenger.of(context).showSnackBar(errorBar);
+            return;
+          }
+          handleLoad("start");
+        },
+        style: ButtonStyle(alignment: Alignment.center),
+        child: Text("Start chatting!"),
+      ),
+    );
+  }
+}
+
+class StreamBox extends StatefulWidget {
+  // final WebSocketChannel channel;
+  final TextEditingController controller;
+  final String loadState;
+  const StreamBox(
+      {super.key, required this.loadState, required this.controller});
+
+  @override
+  State<StreamBox> createState() => _StreamBoxState();
+}
+
+class _StreamBoxState extends State<StreamBox> {
+  @override
+  Widget build(BuildContext context) {
+    if (widget.loadState == "") {
+      return SizedBox();
     }
+    var username = widget.controller.text;
+    final wsSocket = WebSocketChannel.connect(
+        Uri.parse('${config.SERVER_URL}/connect?username=$username'));
+    // await wsSocket.ready;
+    // var x = widget.loadState;
+    return StreamBuilder(
+      stream: wsSocket.stream,
+      builder: (context, snapshot) {
+        if (snapshot.data == null) {
+          return LoadBox(
+            loadMsg: "Finding users, please wait...",
+          );
+        }
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => ChatPage(),
+          ),
+        );
+        return SizedBox();
+      },
+    );
+  }
+}
+
+class LoadBox extends StatelessWidget {
+  final String loadMsg;
+  const LoadBox({super.key, required this.loadMsg});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: SpinKitCircle(
+            color: Theme.of(context).colorScheme.onBackground,
+            size: 50,
+          ),
+        ),
+        Text(
+          loadMsg,
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onBackground,
+          ),
+        )
+      ],
+    );
+  }
 }
 
 

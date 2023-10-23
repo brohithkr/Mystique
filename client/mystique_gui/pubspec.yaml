@@ -37,6 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   username_gen: ^1.0.4
   flutter_spinkit: ^5.2.0
+  web_socket_channel: ^2.4.0
 
 dev_dependencies:
   flutter_test:
