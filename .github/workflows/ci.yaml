@@ -3,7 +3,9 @@ name: Build and Push to Docker Hub
 on: 
   push:
   workflow_dispatch:
-
+    inputs:
+      mode:
+        default: "full"
 
 jobs:
 
@@ -11,7 +13,7 @@ jobs:
 
     runs-on: 'ubuntu-latest'
 
-    if: contains(github.event.head_commit.message, '[deploy]')
+    if: ${{contains(github.event.head_commit.message, '[deploy]') || github.event.inputs.mode == "full"}}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
