@@ -7,8 +7,8 @@ interface User {
 }
 
 var active_uids = new Map<string, User>() // get user data from uid of user
-var active_channels = new Map<string, string[]>()
-var waiting_uids: string[] = [];
+var active_channels = new Map<string, string[]>() // get users of channel based on active channels id
+var waiting_uids: string[] = []; // all waiting user ids
 
 function generate_uid(): string {
     let rand_num = Math.random()
@@ -77,9 +77,13 @@ let app = Bun.serve<User>({
     },
     websocket: {
         open(ws) {
-            let channel_id = ws.data.channel
+            let user_data = ws.data
+            let channel_id = user_data.channel
             ws.subscribe(channel_id)
-            ws.publish(channel_id, `!->${ws.data.username} as entered the chat.`)
+            ws.publish(channel_id, `!-> ${ws.data.username} has entered the chat.`)
+            if(active_channels.get(user_data.uid)?.length == 2) {
+                ws.send(`!-> ${user_data.username} has entered chat.`)
+            }
         },
         message(ws, message) {
             ws.publish(ws.data.channel, `${ws.data.username}: ${message}`)
