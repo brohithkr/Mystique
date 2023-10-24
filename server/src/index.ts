@@ -80,16 +80,22 @@ let app = Bun.serve<User>({
             let user_data = ws.data
             let channel_id = user_data.channel
             ws.subscribe(channel_id)
-            ws.publish(channel_id, `!-> ${ws.data.username} has entered the chat.`)
-            if(active_channels.get(user_data.uid)?.length == 2) {
-                ws.send(`!-> ${user_data.username} has entered chat.`)
-            }
+            ws.publish(channel_id, `!-> ${ws.data.username} entered`)
+            // if(active_channels.get(user_data.uid)?.length == 2) {
+            //     ws.send(`!-> ${user_data.username} has entered chat.`)
+            // }
         },
         message(ws, message) {
+            if((message as string).startsWith('!->')) {
+                let data = (message as string).split(' ')
+                if(data[3] == 'entered') {
+                    ws.publish(ws.data.channel, `!-> ${ws.data.username} here`)
+                }
+            }
             ws.publish(ws.data.channel, `${ws.data.username}: ${message}`)
         },
         close(ws) {
-            ws.publish(ws.data.channel, `!->${ws.data.username} has left the chat.`)
+            ws.publish(ws.data.channel, `!-> ${ws.data.username} left`)
         }
     }
 })
