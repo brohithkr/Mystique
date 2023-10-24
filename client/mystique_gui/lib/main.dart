@@ -137,11 +137,11 @@ class _InputFormState extends State<InputForm> {
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) =>
-                    ChatPage(yourName: "Rohith", theirName: "Ram"),
+                    const ChatPage(yourName: "Rohith", theirName: "Ram"),
               ),
             );
           },
-          child: Text("Demo"),
+          child: const Text("Demo"),
         ),
         StreamBox(loadState: loadState, controller: controller),
       ],

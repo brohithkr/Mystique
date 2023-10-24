@@ -30,7 +30,7 @@ let app = Bun.serve<User>({
         let path = url.pathname
         switch (path) {
             case "/connect":
-                
+
                 let body = url.searchParams
                 let username = body.get("username") ?? "user"
                 let uid = "u" + generate_unique_uid(active_uids)
@@ -76,12 +76,12 @@ let app = Bun.serve<User>({
             let channel_id = user_data.channel
             ws.subscribe(channel_id)
             ws.publish(channel_id, `!-> ${ws.data.username} entered`)
-            
+
         },
         message(ws, message) {
-            if((message as string).startsWith('!->')) {
+            if ((message as string).startsWith('!->')) {
                 let data = (message as string).split(' ')
-                if(data[3] == 'entered') {
+                if (data[3] == 'entered') {
                     ws.publish(ws.data.channel, `!-> ${ws.data.username} here`)
                 }
             }

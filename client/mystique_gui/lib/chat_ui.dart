@@ -53,8 +53,8 @@ class Bottombar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Flexible(flex: 9,child: MessageForm(controller: controller)),
-        Flexible(flex: 1, fit: FlexFit.tight,child: SendButton()),
+        Flexible(flex: 9, child: MessageForm(controller: controller)),
+        Flexible(flex: 1, fit: FlexFit.tight, child: SendButton()),
       ],
     );
   }
