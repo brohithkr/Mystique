@@ -32,7 +32,7 @@ let app = Bun.serve<User>({
         // console.log(url.searchParams)
         switch (path) {
             case "/connect":
-                // console.log(path)
+                
                 let body = url.searchParams
                 let username = body.get("username") ?? "user"
                 let uid = "u" + generate_unique_uid(active_uids)
@@ -63,8 +63,6 @@ let app = Bun.serve<User>({
                     }
                 }
                 active_uids.set(uid, user_data)
-                // console.log(waiting_uids)
-                // console.log(active_channels)
                 server.upgrade(
                     req, {
                     data: user_data
@@ -81,9 +79,7 @@ let app = Bun.serve<User>({
             let channel_id = user_data.channel
             ws.subscribe(channel_id)
             ws.publish(channel_id, `!-> ${ws.data.username} entered`)
-            // if(active_channels.get(user_data.uid)?.length == 2) {
-            //     ws.send(`!-> ${user_data.username} has entered chat.`)
-            // }
+            
         },
         message(ws, message) {
             if((message as string).startsWith('!->')) {
