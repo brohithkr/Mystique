@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
         colorScheme: darkColorScheme,
         useMaterial3: true,
       ),
-      home: HomePage(),
+      home: const HomePage(),
     );
   }
 }
@@ -49,8 +49,8 @@ class HomePage extends StatelessWidget {
             TitleLogo(
               context: context,
             ),
-            SizedBox(height: 100),
-            InputForm(),
+            const SizedBox(height: 100),
+            const InputForm(),
           ],
         ),
       ),
@@ -64,8 +64,8 @@ class TitleLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
+    return const Padding(
+      padding: EdgeInsets.symmetric(
         vertical: 50,
         horizontal: 0,
       ),
@@ -110,11 +110,11 @@ class _InputFormState extends State<InputForm> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(
+        const Text(
           "select a ",
           style: TextStyle(fontSize: 30, fontFamily: "Retrocycles"),
         ),
-        Text(
+        const Text(
           "nickname",
           style: TextStyle(fontSize: 45, fontFamily: "Retrocycles"),
         ),
@@ -131,6 +131,17 @@ class _InputFormState extends State<InputForm> {
         SubmitButton(
           controller: controller,
           handleLoad: handleLoad,
+        ),
+        ElevatedButton(
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) =>
+                    ChatPage(yourName: "Rohith", theirName: "Ram"),
+              ),
+            );
+          },
+          child: Text("Demo"),
         ),
         StreamBox(loadState: loadState, controller: controller),
       ],
@@ -149,11 +160,11 @@ class UsernameField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(right: 5),
+      margin: const EdgeInsets.only(right: 5),
       width: 200,
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surfaceVariant,
-        borderRadius: BorderRadius.all(Radius.circular(8)),
+        borderRadius: const BorderRadius.all(Radius.circular(8)),
       ),
       child: TextFormField(
         // focusNode: focusNode,
@@ -162,14 +173,14 @@ class UsernameField extends StatelessWidget {
         controller: controller,
         textAlign: TextAlign.center,
         textAlignVertical: TextAlignVertical.top,
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           // hintText: (username == "") ? autoGenName : null,
           // labelText: (username == "") ? autoGenName : null,
           border: InputBorder.none,
           // contentPadding: EdgeInsets.all(8),
           hintStyle: TextStyle(),
         ),
-        style: TextStyle(),
+        style: const TextStyle(),
       ),
     );
   }
@@ -198,7 +209,7 @@ class DiceButton extends StatelessWidget {
           ),
         );
       },
-      child: Icon(
+      child: const Icon(
         Icons.casino_rounded,
       ),
     );
@@ -235,8 +246,8 @@ class SubmitButton extends StatelessWidget {
           }
           handleLoad("start");
         },
-        style: ButtonStyle(alignment: Alignment.center),
-        child: Text("Start chatting!"),
+        style: const ButtonStyle(alignment: Alignment.center),
+        child: const Text("Start chatting!"),
       ),
     );
   }
@@ -246,8 +257,11 @@ class StreamBox extends StatefulWidget {
   // final WebSocketChannel channel;
   final TextEditingController controller;
   final String loadState;
-  const StreamBox(
-      {super.key, required this.loadState, required this.controller});
+  const StreamBox({
+    super.key,
+    required this.loadState,
+    required this.controller,
+  });
 
   @override
   State<StreamBox> createState() => _StreamBoxState();
@@ -257,7 +271,7 @@ class _StreamBoxState extends State<StreamBox> {
   @override
   Widget build(BuildContext context) {
     if (widget.loadState == "") {
-      return SizedBox();
+      return const SizedBox();
     }
     var username = widget.controller.text;
     final wsSocket = WebSocketChannel.connect(
@@ -268,16 +282,20 @@ class _StreamBoxState extends State<StreamBox> {
       stream: wsSocket.stream,
       builder: (context, snapshot) {
         if (snapshot.data == null) {
-          return LoadBox(
+          return const LoadBox(
             loadMsg: "Finding users, please wait...",
           );
         }
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => ChatPage(),
+            builder: (context) => ChatPage(
+              wsSocket: wsSocket,
+              yourName: "",
+              theirName: "",
+            ),
           ),
         );
-        return SizedBox();
+        return const SizedBox();
       },
     );
   }
