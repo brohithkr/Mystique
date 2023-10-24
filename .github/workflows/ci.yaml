@@ -1,4 +1,4 @@
-name: Build and Push to Docker Hub
+name: Deploy App
 
 on: 
   push:
@@ -31,5 +31,7 @@ jobs:
         run: |
           cd server
           docker push $USERNAME/mystique
+      - name: trigger redeploy
+        run: curl ${{secrets.DEPLOY_HOOK}}
       
   
