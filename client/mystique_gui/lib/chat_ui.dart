@@ -30,7 +30,8 @@ class _ChatPageState extends State<ChatPage> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Message(data: "Hello i am rohith.", whose: "their"),
+          Message(data: "Hey there", whose: "their"),
+          Message(data: "Hello i am rohith.", whose: "yours"),
           Bottombar(),
         ],
       ),
@@ -93,6 +94,9 @@ class Message extends StatelessWidget {
   Widget build(BuildContext context) {
     final myColorScheme = Theme.of(context).colorScheme;
     return Row(
+        mainAxisAlignment: (whose == "their")
+            ? MainAxisAlignment.start
+            : MainAxisAlignment.end,
         children: (whose == "their")
             ? [
                 Flexible(
@@ -114,10 +118,10 @@ class Message extends StatelessWidget {
                     ),
                   ),
                 ),
-                Flexible(flex: 1, child: SizedBox()),
+                Flexible(flex: 1, fit: FlexFit.tight, child: SizedBox()),
               ]
             : [
-                Flexible(flex: 1, child: SizedBox()),
+                Flexible(flex: 1, fit: FlexFit.tight, child: SizedBox()),
                 Flexible(
                   flex: 2,
                   child: Container(
@@ -131,7 +135,7 @@ class Message extends StatelessWidget {
                       child: Text(
                         data,
                         style: TextStyle(
-                          color: myColorScheme.onPrimary,
+                          color: myColorScheme.onSecondaryContainer,
                         ),
                       ),
                     ),
