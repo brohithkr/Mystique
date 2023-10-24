@@ -28,8 +28,6 @@ let app = Bun.serve<User>({
     async fetch(req, server) {
         let url = new URL(req.url)
         let path = url.pathname
-        // console.log(path)
-        // console.log(url.searchParams)
         switch (path) {
             case "/connect":
                 
@@ -37,7 +35,6 @@ let app = Bun.serve<User>({
                 let username = body.get("username") ?? "user"
                 let uid = "u" + generate_unique_uid(active_uids)
                 let user_data: User;
-                // active_uids.set("u" + uid, username)
                 var channel_id = "";
                 console.log(waiting_uids)
                 if (waiting_uids.length == 0) {
@@ -95,5 +92,3 @@ let app = Bun.serve<User>({
         }
     }
 })
-
-// console.log("Hello via Bun!");
