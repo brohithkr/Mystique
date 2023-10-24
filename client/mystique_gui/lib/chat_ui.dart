@@ -3,6 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
+ColorScheme getColorScheme(BuildContext context) =>
+    Theme.of(context).colorScheme;
+
 class ChatPage extends StatefulWidget {
   final WebSocketChannel? wsSocket;
   final String yourName;
@@ -32,7 +35,7 @@ class _ChatPageState extends State<ChatPage> {
         children: [
           Message(data: "Hey there", whose: "their"),
           Message(data: "Hello i am rohith.", whose: "yours"),
-          Bottombar(),
+          Bottombar(controller: controller),
         ],
       ),
     );
@@ -40,14 +43,65 @@ class _ChatPageState extends State<ChatPage> {
 }
 
 class Bottombar extends StatelessWidget {
-  const Bottombar({super.key});
+  const Bottombar({
+    super.key,
+    required this.controller,
+  });
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    return Row(
       children: [
-        SizedBox(),
+        Flexible(flex: 9,child: MessageForm(controller: controller)),
+        Flexible(flex: 1, fit: FlexFit.tight,child: SendButton()),
       ],
+    );
+  }
+}
+
+class MessageForm extends StatelessWidget {
+  const MessageForm({super.key, required this.controller});
+  final TextEditingController controller;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 6),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceVariant,
+        borderRadius: BorderRadius.circular(25),
+      ),
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          border: InputBorder.none,
+        ),
+      ),
+    );
+  }
+}
+
+class SendButton extends StatelessWidget {
+  const SendButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    //lets use icon button here next
+    return InkWell(
+      borderRadius: BorderRadius.circular(30),
+      onTap: () {},
+      child: Container(
+        width: 50,
+        height: 50,
+        decoration: BoxDecoration(
+          color: getColorScheme(context).inversePrimary,
+          shape: BoxShape.circle,
+        ),
+        child: Icon(
+          Icons.send_rounded,
+          color: getColorScheme(context).onPrimaryContainer,
+        ),
+      ),
     );
   }
 }
