@@ -3,6 +3,7 @@ import 'package:process_run/shell.dart';
 
 import 'package:web_socket_client/web_socket_client.dart';
 import 'dart:io';
+import 'config.dart' as config;
 
 //┌├┐└┘
 List<String> chatHistory = [];
@@ -25,7 +26,8 @@ void main() async {
   stdout.write("Please enter a nickname: ");
   String username = stdin.readLineSync() ?? "user";
   final socket = WebSocket(
-      Uri.parse('ws://mystique.onrender.com/connect?username=$username'));
+    Uri.parse('${config.SERVER_URL}/connect?username=$username'),
+  );
 
   // Wait until a connection has been established.
   await socket.connection.firstWhere((state) {
